@@ -76,9 +76,10 @@ KeyboardDevice* scan_keyboard_devices(int *count) {
 }
 
 int find_keyboard_device(AppData *app) {
-    char *configured_device = load_keyboard_config();
+	int configured_time = DEFAULT_HOLD_DURATION_MS;
+	char *configured_device = load_keyboard_config(&configured_time);
     if (configured_device) {
-        printf("Using configured keyboard device: %s\n", configured_device);
+        printf("Using configured keyboard device: %s with %ims of interval time\n", configured_device, configured_time);
 
         int fd = open(configured_device, O_RDONLY | O_NONBLOCK);
         if (fd >= 0) {
@@ -89,6 +90,7 @@ int find_keyboard_device(AppData *app) {
                     libevdev_has_event_code(dev, EV_KEY, KEY_E)) {
                     printf("✓ Configured device is working: %s\n", libevdev_get_name(dev));
                     app->keyboard_device = configured_device;
+					app->configured_time = configured_time;
                     libevdev_free(dev);
                     return fd;
                 }

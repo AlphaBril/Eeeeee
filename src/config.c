@@ -44,6 +44,7 @@ void save_keyboard_config(const char *device_path) {
     FILE *f = fopen(config_file, "w");
     if (f) {
         fprintf(f, "keyboard_device=%s\n", device_path);
+        fprintf(f, "hold_duration=%i\n", DEFAULT_HOLD_DURATION_MS);
         fclose(f);
         printf("Configuration saved to: %s\n", config_file);
     } else {
@@ -54,7 +55,7 @@ void save_keyboard_config(const char *device_path) {
     free(config_file);
 }
 
-char* load_keyboard_config(void) {
+char* load_keyboard_config(int *configured_time) {
     char *config_file = get_config_file_path();
     if (!config_file) return NULL;
 
@@ -72,13 +73,16 @@ char* load_keyboard_config(void) {
             char *newline = strchr(line + 16, '\n');
             if (newline) *newline = '\0';
             device_path = strdup(line + 16);
-            break;
-        }
+        } else if (strncmp(line, "hold_duration=", 13) == 0) {
+            char *newline = strchr(line + 13, '\n');
+            if (newline) *newline = '\0';
+            *configured_time = atoi(strdup(line + 14));
+		}
     }
 
     fclose(f);
     free(config_file);
-    return device_path;
+	return device_path;
 }
 
 void setup_keyboard_interactive(void) {
@@ -91,7 +95,7 @@ void setup_keyboard_interactive(void) {
         return;
     }
 
-    printf("\n=== Accent Popup Keyboard Setup ===\n");
+    printf("\n=== Eeeeee ===\n");
     printf("Found %d keyboard device(s):\n\n", device_count);
 
     for (int i = 0; i < device_count; i++) {
@@ -101,7 +105,7 @@ void setup_keyboard_interactive(void) {
         printf("\n");
     }
 
-    printf("Which keyboard do you want to use for accent popup? (1-%d): ", device_count);
+    printf("Which keyboard do you want to use for eeeeee? (1-%d): ", device_count);
     fflush(stdout);
 
     int choice;
@@ -133,7 +137,7 @@ void setup_keyboard_interactive(void) {
                 if (test_passed) {
                     save_keyboard_config(selected_device);
                     printf("✓ Configuration saved successfully!\n");
-                    printf("You can now run 'accent-popup' to use the program.\n");
+                    printf("You can now run 'eeeeee' to use the program.\n");
                 } else {
                     printf("⚠ No key press detected. The device might not be working properly.\n");
                     printf("Save configuration anyway? (y/n): ");

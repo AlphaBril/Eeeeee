@@ -19,7 +19,8 @@ sources = [
   'src/config.c',
   'src/keyboard.c',
   'src/events.c',
-  'src/ui.c'
+  'src/ui.c',
+  'src/input.c'
 ]
 
 executable('eeeeee',

@@ -1,6 +1,7 @@
 #define _POSIX_C_SOURCE 200809L
 #include "../headers/config.h"
 #include "../headers/ui.h"
+#include "../headers/input.h"
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <string.h>
@@ -20,6 +21,13 @@ int main(int argc, char **argv) {
         return 0;
     }
 
+    // Initialize virtual keyboard for typing accents
+    if (setup_virtual_keyboard() < 0) {
+        printf("Error: Could not setup virtual keyboard for typing accents.\n");
+        printf("Make sure /dev/uinput is accessible.\n");
+        return 1;
+    }
+
     AppData app_data = {0};
 
     GtkApplication *app = gtk_application_new("com.example.accent-popup",
@@ -30,6 +38,8 @@ int main(int argc, char **argv) {
     int status = g_application_run(G_APPLICATION(app), argc, argv);
 
     // Cleanup
+    cleanup_virtual_keyboard();
+
     if (app_data.timer_id > 0) {
         g_source_remove(app_data.timer_id);
     }

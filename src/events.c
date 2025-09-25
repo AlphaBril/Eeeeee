@@ -25,19 +25,19 @@ void show_popup(AppData *app) {
         gtk_widget_set_visible(app->popup_window, TRUE);
         gtk_window_present(GTK_WINDOW(app->popup_window));
         app->popup_shown = true;
-        printf("Popup shown after holding 'e' for 2 seconds\n");
+        printf("Popup shown after holding '%i' for %i seconds\n", app->key_pressed, app->configured_time);
     }
 }
 
 gboolean check_hold_timer(gpointer user_data) {
     AppData *app = (AppData *)user_data;
 
-    if (app->e_key_pressed) {
+    if (app->key_pressed) {
         gint64 current_time = get_time_ms();
         gint64 press_time_ms = (gint64)app->press_time.tv_sec * 1000 + app->press_time.tv_usec / 1000;
         gint64 elapsed = current_time - press_time_ms;
 
-        if (elapsed >= HOLD_DURATION_MS) {
+        if (elapsed >= app->configured_time) {
             show_popup(app);
             app->timer_id = 0;
             return G_SOURCE_REMOVE;
@@ -50,28 +50,59 @@ gboolean check_hold_timer(gpointer user_data) {
     return G_SOURCE_CONTINUE;
 }
 
+bool is_key_listened(int code) {
+	switch (code) {
+		case KEY_A:
+			return true;
+		case KEY_C:
+			return true;
+		case KEY_E:
+			return true;
+		case KEY_I:
+			return true;
+		case KEY_O:
+			return true;
+		case KEY_U:
+			return true;
+		case KEY_Y:
+			return true;
+		case KEY_LEFTSHIFT:
+			return true;
+		default:
+			return false;
+	}
+}
+
 void handle_key_event(AppData *app, int code, int value) {
-    if (code == KEY_E) {
-        if (value == 1) {  // Key press
-            if (!app->e_key_pressed) {
-                app->e_key_pressed = true;
-                gettimeofday(&app->press_time, NULL);
+    if (is_key_listened(code)) {
+		if (code == KEY_LEFTSHIFT) {
+			if (value == 1) {
+				if (!app->shift_key_hold) {
+					app->shift_key_hold = true;
+				}
+			} else if (value == 0) {
+				app->shift_key_hold = false;
+			}
+		} else {
+			if (value == 1) {
+				if (!app->key_pressed) {
+					app->key_pressed = code;
+					gettimeofday(&app->press_time, NULL);
 
-                if (app->timer_id > 0) {
-                    g_source_remove(app->timer_id);
-                }
-                app->timer_id = g_timeout_add(100, check_hold_timer, app);
-            }
-        } else if (value == 0) {  // Key release
-            app->e_key_pressed = false;
+					if (app->timer_id > 0) {
+						g_source_remove(app->timer_id);
+					}
+					app->timer_id = g_timeout_add(100, check_hold_timer, app);
+				}
+			} else if (value == 0) {
+				app->key_pressed = 0;
 
-            if (app->timer_id > 0) {
-                g_source_remove(app->timer_id);
-                app->timer_id = 0;
-            }
-
-            hide_popup(app);
-        }
+				if (app->timer_id > 0) {
+					g_source_remove(app->timer_id);
+					app->timer_id = 0;
+				}
+			}
+		}
     }
 }
 
@@ -114,5 +145,5 @@ void setup_keyboard_monitoring(AppData *app) {
     g_io_add_watch(kbd_channel, G_IO_IN, keyboard_event_handler, app);
     g_io_channel_unref(kbd_channel);
 
-    printf("✓ Keyboard monitoring active\n");
+    printf("✓ Keyboard monitoring active, waiting for input\n");
 }

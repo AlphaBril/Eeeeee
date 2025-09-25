@@ -6,8 +6,8 @@
 #include <sys/time.h>
 #include <stdbool.h>
 
-#define HOLD_DURATION_MS 2000
-#define CONFIG_DIR ".config/accent-popup"
+#define DEFAULT_HOLD_DURATION_MS 500
+#define CONFIG_DIR ".config/eeeeee"
 #define CONFIG_FILE "config"
 
 typedef struct {
@@ -17,12 +17,15 @@ typedef struct {
 
     int kbd_fd;
     struct libevdev *dev;
-    bool e_key_pressed;
+    int key_pressed;
+	bool shift_key_hold;
+	const char **current_accents;
     struct timeval press_time;
     guint timer_id;
     bool popup_shown;
 
     char *keyboard_device;
+	int configured_time;
 } AppData;
 
 typedef struct {
