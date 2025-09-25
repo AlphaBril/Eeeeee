@@ -112,6 +112,43 @@ static void type_unicode(const char* hex_code) {
     press_key(KEY_ENTER);
 }
 
+typedef struct {
+    const char* accent;
+    const char* unicode;
+} accent_mapping_t;
+
+static const accent_mapping_t accent_map[] = {
+    // A accents
+    {"á", "e1"}, {"à", "e0"}, {"â", "e2"}, {"ä", "e4"}, {"ā", "101"}, {"ã", "e3"},
+    {"Á", "c1"}, {"À", "c0"}, {"Â", "c2"}, {"Ä", "c4"}, {"Ā", "100"}, {"Ã", "c3"},
+
+    // E accents
+    {"é", "e9"}, {"è", "e8"}, {"ê", "ea"}, {"ë", "eb"}, {"ē", "113"},
+    {"É", "c9"}, {"È", "c8"}, {"Ê", "ca"}, {"Ë", "cb"}, {"Ē", "112"},
+
+    // I accents
+    {"í", "ed"}, {"ì", "ec"}, {"î", "ee"}, {"ï", "ef"}, {"ī", "12b"},
+    {"Í", "cd"}, {"Ì", "cc"}, {"Î", "ce"}, {"Ï", "cf"}, {"Ī", "12a"},
+
+    // O accents
+    {"ó", "f3"}, {"ò", "f2"}, {"ô", "f4"}, {"ö", "f6"}, {"ō", "14d"}, {"õ", "f5"},
+    {"Ó", "d3"}, {"Ò", "d2"}, {"Ô", "d4"}, {"Ö", "d6"}, {"Ō", "14c"}, {"Õ", "d5"},
+
+    // U accents
+    {"ú", "fa"}, {"ù", "f9"}, {"û", "fb"}, {"ü", "fc"}, {"ū", "16b"},
+    {"Ú", "da"}, {"Ù", "d9"}, {"Û", "db"}, {"Ü", "dc"}, {"Ū", "16a"},
+
+    // Y accents
+    {"ý", "fd"}, {"ÿ", "ff"},
+    {"Ý", "dd"}, {"Ÿ", "178"},
+
+    // C accents
+    {"ç", "e7"}, {"ć", "107"}, {"č", "10d"},
+    {"Ç", "c7"}, {"Ć", "106"}, {"Č", "10c"},
+
+    {NULL, NULL}
+};
+
 void type_accent_char(const char *accent) {
     if (uinput_fd < 0) {
         printf("Virtual keyboard not available\n");
@@ -120,162 +157,45 @@ void type_accent_char(const char *accent) {
 
     printf("Typing accent: %s\n", accent);
 
-    // E accents (lowercase)
-    if (strcmp(accent, "é") == 0) {
-        type_unicode("e9");  // Unicode for é
-    } else if (strcmp(accent, "è") == 0) {
-        type_unicode("e8");  // Unicode for è
-    } else if (strcmp(accent, "ê") == 0) {
-        type_unicode("ea");  // Unicode for ê
-    } else if (strcmp(accent, "ë") == 0) {
-        type_unicode("eb");  // Unicode for ë
-    } else if (strcmp(accent, "ē") == 0) {
-        type_unicode("113"); // Unicode for ē
-
-    // E accents (uppercase)
-    } else if (strcmp(accent, "É") == 0) {
-        type_unicode("c9");  // Unicode for É
-    } else if (strcmp(accent, "È") == 0) {
-        type_unicode("c8");  // Unicode for È
-    } else if (strcmp(accent, "Ê") == 0) {
-        type_unicode("ca");  // Unicode for Ê
-    } else if (strcmp(accent, "Ë") == 0) {
-        type_unicode("cb");  // Unicode for Ë
-    } else if (strcmp(accent, "Ē") == 0) {
-        type_unicode("112"); // Unicode for Ē
-
-    // A accents (lowercase)
-    } else if (strcmp(accent, "á") == 0) {
-        type_unicode("e1");  // Unicode for á
-    } else if (strcmp(accent, "à") == 0) {
-        type_unicode("e0");  // Unicode for à
-    } else if (strcmp(accent, "â") == 0) {
-        type_unicode("e2");  // Unicode for â
-    } else if (strcmp(accent, "ä") == 0) {
-        type_unicode("e4");  // Unicode for ä
-    } else if (strcmp(accent, "ā") == 0) {
-        type_unicode("101"); // Unicode for ā
-
-    // A accents (uppercase)
-    } else if (strcmp(accent, "Á") == 0) {
-        type_unicode("c1");  // Unicode for Á
-    } else if (strcmp(accent, "À") == 0) {
-        type_unicode("c0");  // Unicode for À
-    } else if (strcmp(accent, "Â") == 0) {
-        type_unicode("c2");  // Unicode for Â
-    } else if (strcmp(accent, "Ä") == 0) {
-        type_unicode("c4");  // Unicode for Ä
-    } else if (strcmp(accent, "Ā") == 0) {
-        type_unicode("100"); // Unicode for Ā
-
-    // I accents (lowercase)
-    } else if (strcmp(accent, "í") == 0) {
-        type_unicode("ed");  // Unicode for í
-    } else if (strcmp(accent, "ì") == 0) {
-        type_unicode("ec");  // Unicode for ì
-    } else if (strcmp(accent, "î") == 0) {
-        type_unicode("ee");  // Unicode for î
-    } else if (strcmp(accent, "ï") == 0) {
-        type_unicode("ef");  // Unicode for ï
-    } else if (strcmp(accent, "ī") == 0) {
-        type_unicode("12b"); // Unicode for ī
-
-    // I accents (uppercase)
-    } else if (strcmp(accent, "Í") == 0) {
-        type_unicode("cd");  // Unicode for Í
-    } else if (strcmp(accent, "Ì") == 0) {
-        type_unicode("cc");  // Unicode for Ì
-    } else if (strcmp(accent, "Î") == 0) {
-        type_unicode("ce");  // Unicode for Î
-    } else if (strcmp(accent, "Ï") == 0) {
-        type_unicode("cf");  // Unicode for Ï
-    } else if (strcmp(accent, "Ī") == 0) {
-        type_unicode("12a"); // Unicode for Ī
-
-    // O accents (lowercase)
-    } else if (strcmp(accent, "ó") == 0) {
-        type_unicode("f3");  // Unicode for ó
-    } else if (strcmp(accent, "ò") == 0) {
-        type_unicode("f2");  // Unicode for ò
-    } else if (strcmp(accent, "ô") == 0) {
-        type_unicode("f4");  // Unicode for ô
-    } else if (strcmp(accent, "ö") == 0) {
-        type_unicode("f6");  // Unicode for ö
-    } else if (strcmp(accent, "ō") == 0) {
-        type_unicode("14d"); // Unicode for ō
-
-    // O accents (uppercase)
-    } else if (strcmp(accent, "Ó") == 0) {
-        type_unicode("d3");  // Unicode for Ó
-    } else if (strcmp(accent, "Ò") == 0) {
-        type_unicode("d2");  // Unicode for Ò
-    } else if (strcmp(accent, "Ô") == 0) {
-        type_unicode("d4");  // Unicode for Ô
-    } else if (strcmp(accent, "Ö") == 0) {
-        type_unicode("d6");  // Unicode for Ö
-    } else if (strcmp(accent, "Ō") == 0) {
-        type_unicode("14c"); // Unicode for Ō
-
-    // U accents (lowercase)
-    } else if (strcmp(accent, "ú") == 0) {
-        type_unicode("fa");  // Unicode for ú
-    } else if (strcmp(accent, "ù") == 0) {
-        type_unicode("f9");  // Unicode for ù
-    } else if (strcmp(accent, "û") == 0) {
-        type_unicode("fb");  // Unicode for û
-    } else if (strcmp(accent, "ü") == 0) {
-        type_unicode("fc");  // Unicode for ü
-    } else if (strcmp(accent, "ū") == 0) {
-        type_unicode("16b"); // Unicode for ū
-
-    // U accents (uppercase)
-    } else if (strcmp(accent, "Ú") == 0) {
-        type_unicode("da");  // Unicode for Ú
-    } else if (strcmp(accent, "Ù") == 0) {
-        type_unicode("d9");  // Unicode for Ù
-    } else if (strcmp(accent, "Û") == 0) {
-        type_unicode("db");  // Unicode for Û
-    } else if (strcmp(accent, "Ü") == 0) {
-        type_unicode("dc");  // Unicode for Ü
-    } else if (strcmp(accent, "Ū") == 0) {
-        type_unicode("16a"); // Unicode for Ū
-
-    // Y accents (lowercase)
-    } else if (strcmp(accent, "ý") == 0) {
-        type_unicode("fd");   // Unicode for ý
-    } else if (strcmp(accent, "ỳ") == 0) {
-        type_unicode("1ef3"); // Unicode for ỳ (grave)
-    } else if (strcmp(accent, "ŷ") == 0) {
-        type_unicode("177");  // Unicode for ŷ (circumflex)
-    } else if (strcmp(accent, "ÿ") == 0) {
-        type_unicode("ff");   // Unicode for ÿ (diaeresis)
-    } else if (strcmp(accent, "ȳ") == 0) {
-        type_unicode("233");  // Unicode for ȳ (macron)
-
-    // Y accents (uppercase)
-    } else if (strcmp(accent, "Ý") == 0) {
-        type_unicode("dd");   // Unicode for Ý
-    } else if (strcmp(accent, "Ỳ") == 0) {
-        type_unicode("1ef2"); // Unicode for Ỳ (grave)
-    } else if (strcmp(accent, "Ŷ") == 0) {
-        type_unicode("176");  // Unicode for Ŷ (circumflex)
-    } else if (strcmp(accent, "Ÿ") == 0) {
-        type_unicode("178");  // Unicode for Ÿ (diaeresis)
-    } else if (strcmp(accent, "Ȳ") == 0) {
-        type_unicode("232");  // Unicode for Ȳ (macron)
-
-    } else {
-        printf("Unknown accent: %s\n", accent);
-        // Fallback: just type the base character
-        char base = accent[0];
-        switch(base) {
-            case 'a': case 'A': press_key(KEY_A); break;
-            case 'e': case 'E': press_key(KEY_E); break;
-            case 'i': case 'I': press_key(KEY_I); break;
-            case 'o': case 'O': press_key(KEY_O); break;
-            case 'u': case 'U': press_key(KEY_U); break;
-            case 'y': case 'Y': press_key(KEY_Y); break;
-            default: press_key(KEY_E); break;
+    for (int i = 0; accent_map[i].accent != NULL; i++) {
+        if (strcmp(accent, accent_map[i].accent) == 0) {
+            type_unicode(accent_map[i].unicode);
+            return;
         }
+    }
+
+    printf("Unknown accent: %s\n", accent);
+
+    unsigned char first_byte = (unsigned char)accent[0];
+    char base_char = 'e'; // default fallback
+
+    if (first_byte >= 0xC0 && first_byte <= 0xC6) base_char = 'A';
+    else if (first_byte >= 0xC8 && first_byte <= 0xCB) base_char = 'E';
+    else if (first_byte >= 0xCC && first_byte <= 0xCF) base_char = 'I';
+    else if (first_byte >= 0xD2 && first_byte <= 0xD6) base_char = 'O';
+    else if (first_byte >= 0xD9 && first_byte <= 0xDC) base_char = 'U';
+    else if (first_byte >= 0xE0 && first_byte <= 0xE6) base_char = 'a';
+    else if (first_byte >= 0xE8 && first_byte <= 0xEB) base_char = 'e';
+    else if (first_byte >= 0xEC && first_byte <= 0xEF) base_char = 'i';
+    else if (first_byte >= 0xF2 && first_byte <= 0xF6) base_char = 'o';
+    else if (first_byte >= 0xF9 && first_byte <= 0xFC) base_char = 'u';
+    else if (first_byte == 0xC7 || first_byte == 0xE7) base_char = (first_byte == 0xC7) ? 'C' : 'c';
+
+    switch(base_char) {
+        case 'a': press_key(KEY_A); break;
+        case 'A': press_key(KEY_A); break;
+        case 'e': press_key(KEY_E); break;
+        case 'E': press_key(KEY_E); break;
+        case 'i': press_key(KEY_I); break;
+        case 'I': press_key(KEY_I); break;
+        case 'o': press_key(KEY_O); break;
+        case 'O': press_key(KEY_O); break;
+        case 'u': press_key(KEY_U); break;
+        case 'U': press_key(KEY_U); break;
+        case 'y': press_key(KEY_Y); break;
+        case 'Y': press_key(KEY_Y); break;
+        case 'c': press_key(KEY_C); break;
+        case 'C': press_key(KEY_C); break;
+        default: press_key(KEY_E); break;
     }
 }

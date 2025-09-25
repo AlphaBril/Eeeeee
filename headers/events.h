@@ -11,5 +11,6 @@ gboolean check_hold_timer(gpointer user_data);
 void handle_key_event(AppData *app, int code, int value);
 gboolean keyboard_event_handler(GIOChannel *channel, GIOCondition condition, gpointer user_data);
 void setup_keyboard_monitoring(AppData *app);
+void select_accent_by_number(AppData *app, int number);
 
 #endif

@@ -13,6 +13,24 @@ gint64 get_time_ms(void) {
     return (gint64)tv.tv_sec * 1000 + tv.tv_usec / 1000;
 }
 
+void select_accent_by_number(AppData *app, int number) {
+    if (!app->popup_shown || !app->popup_button_box) return;
+
+    // Get the nth button (number-1 because we start from 1)
+    GtkWidget *child = gtk_widget_get_first_child(app->popup_button_box);
+    int index = 0;
+
+    while (child && index < (number - 1)) {
+        child = gtk_widget_get_next_sibling(child);
+        index++;
+    }
+
+    if (child && GTK_IS_BUTTON(child)) {
+        // Simulate button click
+        g_signal_emit_by_name(child, "clicked");
+    }
+}
+
 void hide_popup(AppData *app) {
     if (app->popup_shown && app->popup_window) {
         gtk_widget_set_visible(app->popup_window, FALSE);
@@ -54,57 +72,71 @@ gboolean check_hold_timer(gpointer user_data) {
 
 bool is_key_listened(int code) {
 	switch (code) {
-		case KEY_A:
-			return true;
-		case KEY_C:
-			return true;
-		case KEY_E:
-			return true;
-		case KEY_I:
-			return true;
-		case KEY_O:
-			return true;
-		case KEY_U:
-			return true;
-		case KEY_Y:
-			return true;
-		case KEY_LEFTSHIFT:
-			return true;
-		default:
-			return false;
+        case KEY_A:
+        case KEY_C:
+        case KEY_E:
+        case KEY_I:
+        case KEY_O:
+        case KEY_U:
+        case KEY_Y:
+        case KEY_LEFTSHIFT:
+            return true;
+        case KEY_1:
+        case KEY_2:
+        case KEY_3:
+        case KEY_4:
+        case KEY_5:
+        case KEY_6:
+        case KEY_7:
+        case KEY_8:
+        case KEY_9:
+            return true;
+        case KEY_ESC:
+            return true;
+        default:
+            return false;
 	}
 }
 
 void handle_key_event(AppData *app, int code, int value) {
     if (is_key_listened(code)) {
-		if (code == KEY_LEFTSHIFT) {
-			if (value == 1) {
-				if (!app->shift_key_hold) {
-					app->shift_key_hold = true;
-				}
-			} else if (value == 0) {
-				app->shift_key_hold = false;
-			}
-		} else {
-			if (value == 1) {
-				if (!app->key_pressed) {
-					app->key_pressed = code;
-					gettimeofday(&app->press_time, NULL);
+        if (code == KEY_LEFTSHIFT) {
+            if (value == 1) {
+                if (!app->shift_key_hold) {
+                    app->shift_key_hold = true;
+                }
+            } else if (value == 0) {
+                app->shift_key_hold = false;
+            }
+        } else if (code == KEY_ESC) {
+            if (value == 1 && app->popup_shown) {
+                hide_popup(app);
+            }
+        } else if (code >= KEY_1 && code <= KEY_9) {
+            if (value == 1 && app->popup_shown) {
+                int number = code - KEY_1 + 1;
+                select_accent_by_number(app, number);
+            }
+        } else {
+            if (value == 1) {
+                if (!app->key_pressed) {
+                    app->key_pressed = code;
+                    gettimeofday(&app->press_time, NULL);
 
-					if (app->timer_id > 0) {
-						g_source_remove(app->timer_id);
-					}
-					app->timer_id = g_timeout_add(100, check_hold_timer, app);
-				}
-			} else if (value == 0) {
-				app->key_pressed = 0;
+                    if (app->timer_id > 0) {
+                        g_source_remove(app->timer_id);
+                    }
+                    app->timer_id = g_timeout_add(100, check_hold_timer, app);
+                }
+            } else if (value == 0) {
+                app->key_pressed = 0;
 
-				if (app->timer_id > 0) {
-					g_source_remove(app->timer_id);
-					app->timer_id = 0;
-				}
-			}
-		}
+                if (app->timer_id > 0) {
+                    g_source_remove(app->timer_id);
+                    app->timer_id = 0;
+                }
+            }
+        }
     }
 }
 

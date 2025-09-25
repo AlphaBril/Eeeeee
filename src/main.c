@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
     // Initialize virtual keyboard for typing accents
     if (setup_virtual_keyboard() < 0) {
         printf("Error: Could not setup virtual keyboard for typing accents.\n");
-        printf("Make sure /dev/uinput is accessible.\n");
+        printf("Make sure /dev/uinput is accessible to input group.\n");
         return 1;
     }
 

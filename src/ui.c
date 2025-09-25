@@ -102,20 +102,11 @@ void on_accent_selected(GtkWidget *button, gpointer user_data) {
 }
 
 void update_popup_content(AppData *app, int key_code) {
-    if (!app->popup_label || !app->popup_button_box) return;
+    if (!app->popup_button_box) return;
 
     AccentData accent_data = get_accent_data_for_key(key_code);
 
-    char label_text[100];
-    if (app->shift_key_hold) {
-        snprintf(label_text, sizeof(label_text), "Select accent for '%c':",
-                 toupper(accent_data.letter_name[0]));
-    } else {
-        snprintf(label_text, sizeof(label_text), "Select accent for '%s':",
-                 accent_data.letter_name);
-    }
-    gtk_label_set_text(GTK_LABEL(app->popup_label), label_text);
-
+    // Clear existing buttons
     GtkWidget *child = gtk_widget_get_first_child(app->popup_button_box);
     while (child) {
         GtkWidget *next = gtk_widget_get_next_sibling(child);
@@ -136,8 +127,21 @@ void update_popup_content(AppData *app, int key_code) {
             display_accent = accent;
         }
 
-        GtkWidget *button = gtk_button_new_with_label(display_accent);
-        gtk_widget_set_size_request(button, 45, 35);
+        gchar *button_markup = g_strdup_printf(
+			"%s\n<span size='small' alpha='50%%'>%d</span>",
+			display_accent, i + 1
+		);
+		GtkWidget *button = gtk_button_new();
+		GtkWidget *label = gtk_label_new(NULL);
+		gtk_label_set_markup(GTK_LABEL(label), button_markup);
+		gtk_label_set_xalign(GTK_LABEL(label), 0.5);
+		gtk_label_set_yalign(GTK_LABEL(label), 0.5);
+		gtk_button_set_child(GTK_BUTTON(button), label);
+		gtk_widget_set_size_request(button, -1, -1);
+
+        gtk_widget_add_css_class(button, "eeeeee-button");
+
+        g_free(button_markup);
 
         g_object_set_data_full(G_OBJECT(button), "accent",
                               g_strdup(display_accent), g_free);
@@ -153,30 +157,71 @@ void update_popup_content(AppData *app, int key_code) {
     }
 }
 
+void setup_popup_styling() {
+    GtkCssProvider *css_provider = gtk_css_provider_new();
+
+    const char *css_data =
+        ".eeeeee-popup {\n"
+        "    background-color: #fff;\n"
+        "    border-radius: 16px;\n"
+        "    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);\n"
+		"    padding: 8px 12px;\n"
+        "}\n"
+        ".eeeeee-button {\n"
+        "    background: none;\n"
+        "    border: none;\n"
+        "    border-radius: 12px;\n"
+		"    padding: 24px;\n"
+        "    transition: background-color 0.2s ease;\n"
+        "}\n"
+        ".eeeeee-button label {\n"
+        "    color: #000;\n"
+        "    font-size: 22px;\n"
+        "    font-weight: normal;\n"
+        "}\n"
+        ".eeeeee-button:hover {\n"
+        "    background-color: rgba(0, 0, 0, 0.05);\n"
+        "    transform: translateY(-1px);\n"
+        "}\n"
+        ".eeeeee-button:active {\n"
+        "    background-color: rgba(0, 0, 0, 0.1);\n"
+        "    transform: translateY(0);\n"
+        "    box-shadow: none;\n"
+        "}\n";
+
+    gtk_css_provider_load_from_string(css_provider, css_data);
+
+    gtk_style_context_add_provider_for_display(
+        gdk_display_get_default(),
+        GTK_STYLE_PROVIDER(css_provider),
+        GTK_STYLE_PROVIDER_PRIORITY_USER
+    );
+
+    g_object_unref(css_provider);
+}
+
 void create_popup_window(AppData *app) {
     app->popup_window = gtk_window_new();
-    gtk_window_set_title(GTK_WINDOW(app->popup_window), "Select Accent");
+    gtk_window_set_title(GTK_WINDOW(app->popup_window), "Eeeeee");
     gtk_window_set_decorated(GTK_WINDOW(app->popup_window), FALSE);
     gtk_window_set_resizable(GTK_WINDOW(app->popup_window), FALSE);
-    gtk_window_set_default_size(GTK_WINDOW(app->popup_window), 300, 100);
+    gtk_window_set_default_size(GTK_WINDOW(app->popup_window), 300, 40);
+
+    gtk_widget_add_css_class(app->popup_window, "eeeeee-popup");
 
     GtkWidget *main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_window_set_child(GTK_WINDOW(app->popup_window), main_box);
 
-    // Create and store reference to label
-    app->popup_label = gtk_label_new("Select accent:");
-    gtk_widget_set_margin_start(app->popup_label, 10);
-    gtk_widget_set_margin_end(app->popup_label, 10);
-    gtk_widget_set_margin_top(app->popup_label, 10);
-    gtk_box_append(GTK_BOX(main_box), app->popup_label);
-
     // Create and store reference to button box
     app->popup_button_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-    gtk_widget_set_halign(app->popup_button_box, GTK_ALIGN_CENTER);
+	gtk_widget_set_halign(app->popup_button_box, GTK_ALIGN_CENTER);
+	gtk_widget_set_valign(app->popup_button_box, GTK_ALIGN_CENTER);
     gtk_widget_set_margin_start(app->popup_button_box, 10);
     gtk_widget_set_margin_end(app->popup_button_box, 10);
     gtk_widget_set_margin_bottom(app->popup_button_box, 10);
     gtk_box_append(GTK_BOX(main_box), app->popup_button_box);
+
+	setup_popup_styling();
 }
 
 void on_activate(GtkApplication *gtk_app, gpointer user_data) {
