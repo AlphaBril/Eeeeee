@@ -105,7 +105,7 @@ void setup_keyboard_interactive(void) {
         printf("\n");
     }
 
-    printf("Which keyboard do you want to use for eeeeee? (1-%d): ", device_count);
+    printf("Which keyboard do you want to use for Eeeeee? (1-%d): ", device_count);
     fflush(stdout);
 
     int choice;
@@ -137,7 +137,7 @@ void setup_keyboard_interactive(void) {
                 if (test_passed) {
                     save_keyboard_config(selected_device);
                     printf("✓ Configuration saved successfully!\n");
-                    printf("You can now run 'eeeeee' to use the program.\n");
+                    printf("You can now run 'Eeeeee' to use the program.\n");
                 } else {
                     printf("⚠ No key press detected. The device might not be working properly.\n");
                     printf("Save configuration anyway? (y/n): ");
