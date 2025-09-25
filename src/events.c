@@ -75,7 +75,11 @@ void handle_key_event(AppData *app, int code, int value) {
     }
 }
 
-gboolean keyboard_event_handler(GIOChannel *channel, GIOCondition condition, gpointer user_data) {
+gboolean keyboard_event_handler(
+	GIOChannel *channel __attribute__((unused)),
+    GIOCondition condition __attribute__((unused)),
+    gpointer user_data
+) {
     AppData *app = (AppData *)user_data;
     struct input_event ev;
     int rc;

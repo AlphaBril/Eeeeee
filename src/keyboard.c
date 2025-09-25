@@ -35,7 +35,7 @@ KeyboardDevice* scan_keyboard_devices(int *count) {
             continue;
         }
 
-        snprintf(path, sizeof(path), "/dev/input/%s", entry->d_name);
+        snprintf(path, sizeof(path), "/dev/input/%.240s", entry->d_name);
 
         int fd = open(path, O_RDONLY | O_NONBLOCK);
         if (fd < 0) continue;

@@ -87,7 +87,7 @@ void setup_keyboard_interactive(void) {
 
     if (!devices || device_count == 0) {
         printf("No keyboard devices found!\n");
-        printf("Make sure you're in the 'input' group: sudo usermod -a -G input \$USER\n");
+        printf("Make sure you're in the 'input' group: sudo usermod -a -G input $USER\n");
         return;
     }
 
@@ -138,7 +138,9 @@ void setup_keyboard_interactive(void) {
                     printf("⚠ No key press detected. The device might not be working properly.\n");
                     printf("Save configuration anyway? (y/n): ");
                     char confirm;
-                    scanf(" %c", &confirm);
+                    if (scanf(" %c", &confirm) != 1) {
+    					confirm = 'n';  // Default to 'n' if input fails
+					}
                     if (confirm == 'y' || confirm == 'Y') {
                         save_keyboard_config(selected_device);
                         printf("Configuration saved.\n");
