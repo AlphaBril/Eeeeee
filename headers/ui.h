@@ -5,5 +5,6 @@
 
 void create_popup_window(AppData *app);
 void on_activate(GtkApplication *gtk_app, gpointer user_data);
+void update_popup_content(AppData *app, int key_code);
 
 #endif

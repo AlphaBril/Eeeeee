@@ -1,12 +1,89 @@
 #include "../headers/ui.h"
 #include "../headers/events.h"
 #include "../headers/input.h"
+#include <ctype.h>
 
-// Callback function for typing the accent after delay
+typedef struct {
+    const char *letter_name;
+    const char *accents[10]; // Adjust size as needed
+} AccentData;
+
+static AccentData get_accent_data_for_key(int key_code) {
+    AccentData data = {0};
+
+    switch (key_code) {
+        case KEY_A:
+            data.letter_name = "a";
+            data.accents[0] = "á";
+            data.accents[1] = "à";
+            data.accents[2] = "â";
+            data.accents[3] = "ä";
+            data.accents[4] = "ā";
+            data.accents[5] = "ã";
+            data.accents[6] = NULL;
+            break;
+        case KEY_E:
+            data.letter_name = "e";
+            data.accents[0] = "é";
+            data.accents[1] = "è";
+            data.accents[2] = "ê";
+            data.accents[3] = "ë";
+            data.accents[4] = "ē";
+            data.accents[5] = NULL;
+            break;
+        case KEY_I:
+            data.letter_name = "i";
+            data.accents[0] = "í";
+            data.accents[1] = "ì";
+            data.accents[2] = "î";
+            data.accents[3] = "ï";
+            data.accents[4] = "ī";
+            data.accents[5] = NULL;
+            break;
+        case KEY_O:
+            data.letter_name = "o";
+            data.accents[0] = "ó";
+            data.accents[1] = "ò";
+            data.accents[2] = "ô";
+            data.accents[3] = "ö";
+            data.accents[4] = "ō";
+            data.accents[5] = "õ";
+            data.accents[6] = NULL;
+            break;
+        case KEY_U:
+            data.letter_name = "u";
+            data.accents[0] = "ú";
+            data.accents[1] = "ù";
+            data.accents[2] = "û";
+            data.accents[3] = "ü";
+            data.accents[4] = "ū";
+            data.accents[5] = NULL;
+            break;
+        case KEY_Y:
+            data.letter_name = "y";
+            data.accents[0] = "ý";
+            data.accents[1] = "ÿ";
+            data.accents[2] = NULL;
+            break;
+        case KEY_C:
+            data.letter_name = "c";
+            data.accents[0] = "ç";
+            data.accents[1] = "ć";
+            data.accents[2] = "č";
+            data.accents[3] = NULL;
+            break;
+        default:
+            data.letter_name = "unknown";
+            data.accents[0] = NULL;
+            break;
+    }
+    return data;
+}
+
 static gboolean type_accent_delayed(gpointer user_data) {
     char *accent = (char *)user_data;
     type_accent_char(accent);
-    g_free(accent); // Free the duplicated string
+    g_free(accent);
     return G_SOURCE_REMOVE;
 }
 
@@ -18,55 +95,88 @@ void on_accent_selected(GtkWidget *button, gpointer user_data) {
 
     printf("Selected accent: %s\n", accent);
 
-    // Hide popup first
     hide_popup(app);
 
-    // Small delay then type the accent
-    // Duplicate the string since we need it in the callback
     char *accent_copy = g_strdup(accent);
     g_timeout_add(100, type_accent_delayed, accent_copy);
+}
+
+void update_popup_content(AppData *app, int key_code) {
+    if (!app->popup_label || !app->popup_button_box) return;
+
+    AccentData accent_data = get_accent_data_for_key(key_code);
+
+    char label_text[100];
+    if (app->shift_key_hold) {
+        snprintf(label_text, sizeof(label_text), "Select accent for '%c':",
+                 toupper(accent_data.letter_name[0]));
+    } else {
+        snprintf(label_text, sizeof(label_text), "Select accent for '%s':",
+                 accent_data.letter_name);
+    }
+    gtk_label_set_text(GTK_LABEL(app->popup_label), label_text);
+
+    GtkWidget *child = gtk_widget_get_first_child(app->popup_button_box);
+    while (child) {
+        GtkWidget *next = gtk_widget_get_next_sibling(child);
+        gtk_box_remove(GTK_BOX(app->popup_button_box), child);
+        child = next;
+    }
+
+    for (int i = 0; accent_data.accents[i] != NULL; i++) {
+        const char *accent = accent_data.accents[i];
+
+        const char *display_accent;
+        gchar *upper_accent = NULL;
+
+        if (app->shift_key_hold) {
+            upper_accent = g_utf8_strup(accent, -1);
+            display_accent = upper_accent;
+        } else {
+            display_accent = accent;
+        }
+
+        GtkWidget *button = gtk_button_new_with_label(display_accent);
+        gtk_widget_set_size_request(button, 45, 35);
+
+        g_object_set_data_full(G_OBJECT(button), "accent",
+                              g_strdup(display_accent), g_free);
+
+        g_signal_connect(button, "clicked",
+                        G_CALLBACK(on_accent_selected), app);
+
+        gtk_box_append(GTK_BOX(app->popup_button_box), button);
+
+        if (upper_accent) {
+            g_free(upper_accent);
+        }
+    }
 }
 
 void create_popup_window(AppData *app) {
     app->popup_window = gtk_window_new();
     gtk_window_set_title(GTK_WINDOW(app->popup_window), "Select Accent");
-    gtk_window_set_decorated(GTK_WINDOW(app->popup_window), FALSE);  // No decoration for quick access
+    gtk_window_set_decorated(GTK_WINDOW(app->popup_window), FALSE);
     gtk_window_set_resizable(GTK_WINDOW(app->popup_window), FALSE);
     gtk_window_set_default_size(GTK_WINDOW(app->popup_window), 300, 100);
 
     GtkWidget *main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_window_set_child(GTK_WINDOW(app->popup_window), main_box);
 
-    GtkWidget *label = gtk_label_new("Select accent for 'e':");
-    gtk_widget_set_margin_start(label, 10);
-    gtk_widget_set_margin_end(label, 10);
-    gtk_widget_set_margin_top(label, 10);
-    gtk_box_append(GTK_BOX(main_box), label);
+    // Create and store reference to label
+    app->popup_label = gtk_label_new("Select accent:");
+    gtk_widget_set_margin_start(app->popup_label, 10);
+    gtk_widget_set_margin_end(app->popup_label, 10);
+    gtk_widget_set_margin_top(app->popup_label, 10);
+    gtk_box_append(GTK_BOX(main_box), app->popup_label);
 
-    // Create button box for accents
-    GtkWidget *button_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-    gtk_widget_set_halign(button_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_margin_start(button_box, 10);
-    gtk_widget_set_margin_end(button_box, 10);
-    gtk_widget_set_margin_bottom(button_box, 10);
-    gtk_box_append(GTK_BOX(main_box), button_box);
-
-    // Accent options
-    const char *accents[] = {"é", "è", "ê", "ë", "ē", NULL};
-
-    for (int i = 0; accents[i] != NULL; i++) {
-        GtkWidget *button = gtk_button_new_with_label(accents[i]);
-        gtk_widget_set_size_request(button, 45, 35);
-
-        // Store the accent character with the button
-        g_object_set_data_full(G_OBJECT(button), "accent",
-                              g_strdup(accents[i]), g_free);
-
-        g_signal_connect(button, "clicked",
-                        G_CALLBACK(on_accent_selected), app);
-
-        gtk_box_append(GTK_BOX(button_box), button);
-    }
+    // Create and store reference to button box
+    app->popup_button_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    gtk_widget_set_halign(app->popup_button_box, GTK_ALIGN_CENTER);
+    gtk_widget_set_margin_start(app->popup_button_box, 10);
+    gtk_widget_set_margin_end(app->popup_button_box, 10);
+    gtk_widget_set_margin_bottom(app->popup_button_box, 10);
+    gtk_box_append(GTK_BOX(main_box), app->popup_button_box);
 }
 
 void on_activate(GtkApplication *gtk_app, gpointer user_data) {

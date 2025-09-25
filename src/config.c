@@ -143,7 +143,7 @@ void setup_keyboard_interactive(void) {
                     printf("Save configuration anyway? (y/n): ");
                     char confirm;
                     if (scanf(" %c", &confirm) != 1) {
-    					confirm = 'n';  // Default to 'n' if input fails
+    					confirm = 'n';
 					}
                     if (confirm == 'y' || confirm == 'Y') {
                         save_keyboard_config(selected_device);

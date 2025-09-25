@@ -23,11 +23,9 @@ int setup_virtual_keyboard(void) {
         return -1;
     }
 
-    // Enable key events
     ioctl(uinput_fd, UI_SET_EVBIT, EV_KEY);
     ioctl(uinput_fd, UI_SET_EVBIT, EV_SYN);
 
-    // Enable all keyboard keys
     for (int i = 0; i < KEY_MAX; i++) {
         ioctl(uinput_fd, UI_SET_KEYBIT, i);
     }

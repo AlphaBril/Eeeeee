@@ -14,6 +14,8 @@ typedef struct {
     GtkWidget *window;
     GtkWidget *popup_window;
     GtkWidget *label;
+	GtkWidget *popup_label;
+    GtkWidget *popup_button_box;
 
     int kbd_fd;
     struct libevdev *dev;

@@ -1,6 +1,7 @@
 #define _POSIX_C_SOURCE 200809L
 #include "../headers/events.h"
 #include "../headers/keyboard.h"
+#include "../headers/ui.h"
 #include <stdio.h>
 #include <sys/time.h>
 #include <linux/input.h>
@@ -22,6 +23,7 @@ void hide_popup(AppData *app) {
 
 void show_popup(AppData *app) {
     if (!app->popup_shown && app->popup_window) {
+        update_popup_content(app, app->key_pressed);
         gtk_widget_set_visible(app->popup_window, TRUE);
         gtk_window_present(GTK_WINDOW(app->popup_window));
         app->popup_shown = true;

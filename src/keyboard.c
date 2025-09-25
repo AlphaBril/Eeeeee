@@ -47,14 +47,14 @@ KeyboardDevice* scan_keyboard_devices(int *count) {
             continue;
         }
 
-        if (libevdev_has_event_type(dev, EV_KEY) && 
+        if (libevdev_has_event_type(dev, EV_KEY) &&
             libevdev_has_event_code(dev, EV_KEY, KEY_E)) {
 
             const char *name = libevdev_get_name(dev);
-            bool has_full_keyboard = libevdev_has_event_code(dev, EV_KEY, KEY_A) && 
+            bool has_full_keyboard = libevdev_has_event_code(dev, EV_KEY, KEY_A) &&
                                    libevdev_has_event_code(dev, EV_KEY, KEY_Z);
 
-            if (strstr(name, "Mouse") || strstr(name, "System Control") || 
+            if (strstr(name, "Mouse") || strstr(name, "System Control") ||
                 strstr(name, "Consumer Control") || strstr(name, "Touchpad")) {
                 libevdev_free(dev);
                 close(fd);
