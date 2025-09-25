@@ -155,6 +155,14 @@ void type_accent_char(const char *accent) {
         return;
     }
 
+    printf("Removing key pressed\n");
+    emit_event(EV_KEY, KEY_BACKSPACE, 1);
+    emit_event(EV_SYN, SYN_REPORT, 0);
+    usleep_custom(5);
+    emit_event(EV_KEY, KEY_BACKSPACE, 0);
+    emit_event(EV_SYN, SYN_REPORT, 0);
+    usleep_custom(10);
+
     printf("Typing accent: %s\n", accent);
 
     for (int i = 0; accent_map[i].accent != NULL; i++) {
