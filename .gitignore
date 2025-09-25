@@ -47,9 +47,15 @@
 *.cmd
 .tmp_versions/
 modules.order
+builddir
 Module.symvers
 Mkfile.old
 dkms.conf
 
 # debug information files
 *.dwo
+
+.envrc
+shell.nix
+.direnv
+.vscode
