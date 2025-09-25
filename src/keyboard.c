@@ -104,6 +104,6 @@ int find_keyboard_device(AppData *app) {
     }
 
     printf("No valid configuration found.\n");
-    printf("Run 'accent-popup --setup' to configure your keyboard.\n");
+    printf("Run 'Eeeeee --setup' to configure your keyboard.\n");
     return -1;
 }
