@@ -26,15 +26,12 @@ Think of it as giving your keyboard the power of *French textbooks, Spanish nove
 
 ---
 
-## 📸 Screenshots / Demos
+## 📸 Demo
 
 _(Replace with real ones later)_
 
 **Popup in action:**
-![screenshot placeholder](https://via.placeholder.com/600x300.png?text=Popup+with+accents)
-
-**Config example:**
-![screenshot placeholder](https://via.placeholder.com/600x300.png?text=Config+menu)
+![screenshot placeholder](./demo/demo.gif)
 
 ---
 
