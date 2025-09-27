@@ -38,18 +38,12 @@ jobs:
           cd ..
           mv *.deb ${{ github.event.repository.name }}-${{ github.ref_name }}-amd64.deb
 
-      - name: Build Arch Linux package
-        run: |
-          makepkg -f --noconfirm
-          mv *.pkg.tar.zst ${{ github.event.repository.name }}-${{ github.ref_name }}-x86_64.pkg.tar.zst
-
       - name: Upload release assets
         uses: softprops/action-gh-release@v1
         with:
           files: |
             ${{ github.event.repository.name }}-${{ github.ref_name }}.tar.gz
             ${{ github.event.repository.name }}-${{ github.ref_name }}-amd64.deb
-            ${{ github.event.repository.name }}-${{ github.ref_name }}-x86_64.pkg.tar.zst
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   build-arch:
