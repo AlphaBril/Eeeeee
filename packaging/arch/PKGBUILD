@@ -1,11 +1,11 @@
 # Maintainer: AlphaBril <alphabril@koodibril.com>
 
-pkgname=Eeeeee
+pkgname=eeeeee
 pkgver=1.0.0
 pkgrel=1
-pkgdesc="Eeeeee is a GTK4-powered popup for accent characters"
+pkgdesc="eeeeee is a GTK4-powered popup for accent characters"
 arch=('x86_64')
-url="https://github.com/AlphaBril/Eeeeee"
+url="https://github.com/AlphaBril/eeeeee"
 license=('GPL3')
 depends=('gtk4' 'libevdev' 'glib2')
 makedepends=('meson' 'ninja' 'gcc' 'pkgconf')

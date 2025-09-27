@@ -202,7 +202,7 @@ void setup_popup_styling() {
 
 void create_popup_window(AppData *app) {
     app->popup_window = gtk_window_new();
-    gtk_window_set_title(GTK_WINDOW(app->popup_window), "Eeeeee");
+    gtk_window_set_title(GTK_WINDOW(app->popup_window), "eeeeee");
     gtk_window_set_decorated(GTK_WINDOW(app->popup_window), FALSE);
     gtk_window_set_resizable(GTK_WINDOW(app->popup_window), FALSE);
     gtk_window_set_default_size(GTK_WINDOW(app->popup_window), 300, 40);

@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Eeeeee
-Source: https://github.com/AlphaBril/Eeeeee
+Upstream-Name: eeeeee
+Source: https://github.com/AlphaBril/eeeeee
 
 Files: *
 Copyright: 2025 AlphaBril <alphabril@koodibril.com>

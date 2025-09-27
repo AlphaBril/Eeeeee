@@ -1,4 +1,4 @@
-project('Eeeeee', 'c',
+project('eeeeee', 'c',
   version : '1.0.0',
   default_options : ['warning_level=2',
                      'c_std=c99',
@@ -23,10 +23,10 @@ sources = [
   'src/input.c'
 ]
 
-executable('Eeeeee',
+executable('eeeeee',
   sources,
   dependencies : [gtk_dep, libevdev_dep, gio_dep],
   include_directories : inc_dir,
   install : true)
 
-install_data('README.md', install_dir : get_option('datadir') / 'doc' / 'Eeeeee')
+install_data('README.md', install_dir : get_option('datadir') / 'doc' / 'eeeeee')

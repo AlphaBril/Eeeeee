@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 #define DEFAULT_HOLD_DURATION_MS 500
-#define CONFIG_DIR ".config/Eeeeee"
+#define CONFIG_DIR ".config/eeeeee"
 #define CONFIG_FILE "config"
 
 typedef struct {

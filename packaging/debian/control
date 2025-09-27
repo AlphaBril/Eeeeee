@@ -5,9 +5,9 @@ Maintainer: Alphabril <alphabril@koodibril.com>
 Build-Depends: debhelper-compat (= 13), meson, ninja-build, pkg-config,
                libgtk-4-dev, libevdev-dev, libglib2.0-dev
 Standards-Version: 4.6.0
-Homepage: https://github.com/AlphaBril/Eeeeee
+Homepage: https://github.com/AlphaBril/eeeeee
 
-Package: Eeeeee
+Package: eeeeee
 Architecture: amd64
 Depends: ${shlibs:Depends}, ${misc:Depends}, libgtk-4-1, libevdev2, libglib2.0-0
-Description: Eeeeee is a GTK4-powered popup for accent characters
+Description: eeeeee is a GTK4-powered popup for accent characters
