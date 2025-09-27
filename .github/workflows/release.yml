@@ -17,7 +17,8 @@ jobs:
           sudo apt update
           sudo apt install -y meson ninja-build gcc pkg-config \
             libgtk-4-dev libevdev-dev libglib2.0-dev \
-            fakeroot dpkg-dev arch-install-scripts binutils
+            fakeroot dpkg-dev arch-install-scripts binutils \
+            build-essential debhelper
 
       - name: Build project
         run: |

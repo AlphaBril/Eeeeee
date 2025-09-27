@@ -1,7 +1,7 @@
 Source: eeeeee
 Section: utils
 Priority: optional
-Maintainer: Alphabril <ton@email>
+Maintainer: Alphabril <alphabril@koodibril.com>
 Build-Depends: debhelper-compat (= 13), meson, ninja-build, pkg-config,
                libgtk-4-dev, libevdev-dev, libglib2.0-dev
 Standards-Version: 4.6.0
