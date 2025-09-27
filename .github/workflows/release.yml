@@ -34,7 +34,6 @@ jobs:
 
       - name: Build Debian package
         run: |
-          cp -r packaging/debian package/
           cd package
           dpkg-buildpackage -us -uc -b
           cd ..
@@ -42,7 +41,6 @@ jobs:
 
       - name: Build Arch Linux package
         run: |
-          cp PKGBUILD .
           makepkg -f --noconfirm
           mv *.pkg.tar.zst ${{ github.event.repository.name }}-${{ github.ref_name }}-x86_64.pkg.tar.zst
 
