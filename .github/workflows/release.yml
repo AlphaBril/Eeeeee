@@ -34,7 +34,6 @@ jobs:
 
       - name: Build Debian package
         run: |
-          cd package
           dpkg-buildpackage -us -uc -b
           cd ..
           mv *.deb ${{ github.event.repository.name }}-${{ github.ref_name }}-amd64.deb
