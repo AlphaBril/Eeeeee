@@ -35,7 +35,7 @@ jobs:
       - name: Build Debian package
         run: |
           dpkg-buildpackage -us -uc -b
-          mv *.deb ${{ github.event.repository.name }}-${{ github.ref_name }}-amd64.deb
+          mv ../*.deb ${{ github.event.repository.name }}-${{ github.ref_name }}-amd64.deb
 
       - name: Upload release assets
         uses: softprops/action-gh-release@v1

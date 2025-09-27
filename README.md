@@ -45,13 +45,13 @@ _(Replace with real ones later)_
 If you’re on **NixOS** or use flakes, you’re covered:
 
 ```bash
-nix run github:AlphaBril/eeeeee
+nix run github:AlphaBril/Eeeeee
 ````
 
 Or enter a dev shell:
 
 ```bash
-nix develop github:AlphaBril/eeeeee
+nix develop github:AlphaBril/Eeeeee
 ```
 
 ---
@@ -83,8 +83,8 @@ sudo apt install eeeeee
 If you don’t want to wait for packages, build it yourself:
 
 ```bash
-git clone https://github.com/AlphaBril/eeeeee.git
-cd eeeeee
+git clone https://github.com/AlphaBril/Eeeeee.git
+cd Eeeeee
 meson setup build
 ninja -C build
 sudo ninja -C build install

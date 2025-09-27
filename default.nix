@@ -9,19 +9,11 @@ pkgs.stdenv.mkDerivation rec {
     owner = "AlphaBril";
     repo = "Eeeeee";
     rev = "v${version}";
-    sha256 = "sha256-PLACEHOLDER";
+    sha256 = "1jq0lwzhdaa5ni8b9cprk3cfm432ipx0y1q0y808mjj5j9dspimh";
   };
 
   nativeBuildInputs = [ pkgs.meson pkgs.ninja pkgs.pkg-config ];
   buildInputs = [ pkgs.gtk4 pkgs.libevdev pkgs.glib ];
-
-  mesonFlags = [
-    "-Dprefix=$out"
-  ];
-
-  installPhase = ''
-    ninja install
-  '';
 
   meta = {
     description = "eeeeee is a GTK4-powered popup for accent characters";
