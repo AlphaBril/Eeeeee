@@ -1,4 +1,4 @@
-Source: Eeeeee
+Source: eeeeee
 Section: utils
 Priority: optional
 Maintainer: Alphabril <ton@email>
@@ -11,4 +11,3 @@ Package: Eeeeee
 Architecture: amd64
 Depends: ${shlibs:Depends}, ${misc:Depends}, libgtk-4-1, libevdev2, libglib2.0-0
 Description: Eeeeee is a GTK4-powered popup for accent characters
-debhelper-compat (= 13)
