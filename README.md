@@ -62,7 +62,7 @@ nix develop github:AlphaBril/Eeeeee
 Once the PKGBUILD lands, you’ll be able to:
 
 ```bash
-yay -S eeeeee
+yay -S Eeeeee
 ```
 
 ---
@@ -73,7 +73,7 @@ yay -S eeeeee
 Will eventually be installable via:
 
 ```bash
-sudo apt install eeeeee
+sudo apt install Eeeeee
 ```
 
 ---
