@@ -32,19 +32,19 @@ jobs:
       - name: Create tarball
         run: |
           cd package
-          tar czf ../${{ github.event.repository.name }}-${{ github.ref_name }}.tar.gz .
+          tar czf ../${{ github.event.repository.name }}-${{ github.event.release.tag_name }}.tar.gz .
           cd ..
 
       - name: Build Debian package
         run: |
           dpkg-buildpackage -us -uc -b
-          mv ../*.deb ${{ github.event.repository.name }}-${{ github.ref_name }}-amd64.deb
+          mv ../*.deb ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}-amd64.deb
 
       - name: Upload release assets
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ${{ github.event.repository.name }}-${{ github.ref_name }}.tar.gz
-            ${{ github.event.repository.name }}-${{ github.ref_name }}-amd64.deb
+            ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}.tar.gz
+            ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}-amd64.deb
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
