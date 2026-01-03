@@ -1,7 +1,7 @@
 # Maintainer: AlphaBril <alphabril@koodibril.com>
 
 pkgname=eeeeee
-pkgver=1.0.0
+pkgver=1.0.1
 pkgrel=1
 pkgdesc="eeeeee is a GTK4-powered popup for accent characters"
 arch=('x86_64')
