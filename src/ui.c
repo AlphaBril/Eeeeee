@@ -227,6 +227,10 @@ void create_popup_window(AppData *app) {
 void on_activate(GtkApplication *gtk_app, gpointer user_data) {
     AppData *app = (AppData *)user_data;
 
+	if (app->window) {
+		return;
+	}
+
     app->window = gtk_application_window_new(gtk_app);
 
     create_popup_window(app);

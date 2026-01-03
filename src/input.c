@@ -49,6 +49,7 @@ void cleanup_virtual_keyboard(void) {
         close(uinput_fd);
         uinput_fd = -1;
     }
+    printf("✓ Virtual keyboard cleanedup\n");
 }
 static void emit_event(int type, int code, int value) {
     struct input_event ie = {};
