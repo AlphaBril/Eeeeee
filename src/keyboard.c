@@ -55,7 +55,8 @@ KeyboardDevice* scan_keyboard_devices(int *count) {
                                    libevdev_has_event_code(dev, EV_KEY, KEY_Z);
 
             if (strstr(name, "Mouse") || strstr(name, "System Control") ||
-                strstr(name, "Consumer Control") || strstr(name, "Touchpad")) {
+                strstr(name, "Consumer Control") || strstr(name, "Touchpad") ||
+                strcmp(name, "Accent Popup Virtual Keyboard") == 0) {
                 libevdev_free(dev);
                 close(fd);
                 continue;
