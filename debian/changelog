@@ -1,3 +1,12 @@
+eeeeee (1.1.0-1) unstable; urgency=medium
+
+  * Listen to all keyboards at once, with hotplug support.
+  * Remove --setup: no device selection needed anymore.
+  * New macOS-style popup with light/dark mode and arrow-key navigation.
+  * Add --version flag.
+
+ -- AlphaBril <alphabril@koodibril.com>  Thu, 19 Nov 2026 12:00:00 +0000
+
 eeeeee (1.0.2-1) unstable; urgency=medium
 
   * Fix hold_duration config parsing and memory leak.

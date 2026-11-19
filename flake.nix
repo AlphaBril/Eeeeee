@@ -14,7 +14,7 @@
       {
         packages.default = pkgs.stdenv.mkDerivation rec {
           pname = "eeeeee";
-          version = "1.0.2";
+          version = "1.1.0";
 
           src = ./.;
 
