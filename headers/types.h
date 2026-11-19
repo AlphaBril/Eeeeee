@@ -9,14 +9,15 @@
 #define DEFAULT_HOLD_DURATION_MS 500
 #define CONFIG_DIR ".config/eeeeee"
 #define CONFIG_FILE "config"
+#define VIRTUAL_KEYBOARD_NAME "Accent Popup Virtual Keyboard"
 
 typedef struct {
     GtkWidget *window;
     GtkWidget *popup_window;
     GtkWidget *popup_button_box;
 
-    int kbd_fd;
-    struct libevdev *dev;
+    GHashTable *keyboards;
+    GFileMonitor *input_monitor;
     int key_pressed;
 	bool shift_key_hold;
 	const char **current_accents;
@@ -24,14 +25,15 @@ typedef struct {
     guint timer_id;
     bool popup_shown;
 
-    char *keyboard_device;
 	int configured_time;
 } AppData;
 
 typedef struct {
-    char *device_path;
-    char *device_name;
-    bool has_full_keyboard;
-} KeyboardDevice;
+    AppData *app;
+    char *path;
+    int fd;
+    struct libevdev *dev;
+    guint watch_id;
+} KeyboardSource;
 
 #endif

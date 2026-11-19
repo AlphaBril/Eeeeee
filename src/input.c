@@ -34,7 +34,7 @@ int setup_virtual_keyboard(void) {
     usetup.id.bustype = BUS_USB;
     usetup.id.vendor = 0x1234;
     usetup.id.product = 0x5678;
-    strcpy(usetup.name, "Accent Popup Virtual Keyboard");
+    strcpy(usetup.name, VIRTUAL_KEYBOARD_NAME);
 
     ioctl(uinput_fd, UI_DEV_SETUP, &usetup);
     ioctl(uinput_fd, UI_DEV_CREATE);

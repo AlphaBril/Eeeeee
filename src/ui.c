@@ -1,5 +1,7 @@
 #include "../headers/ui.h"
 #include "../headers/events.h"
+#include "../headers/keyboard.h"
+#include "../headers/config.h"
 #include "../headers/input.h"
 #include <ctype.h>
 
@@ -234,6 +236,9 @@ void on_activate(GtkApplication *gtk_app, gpointer user_data) {
     app->window = gtk_application_window_new(gtk_app);
 
     create_popup_window(app);
+
+    app->configured_time = load_hold_duration();
+    printf("Hold duration: %ims\n", app->configured_time);
 
     if (!setup_keyboard_monitoring(app)) {
         g_application_quit(G_APPLICATION(gtk_app));

@@ -146,42 +146,33 @@ gboolean keyboard_event_handler(
     GIOCondition condition __attribute__((unused)),
     gpointer user_data
 ) {
-    AppData *app = (AppData *)user_data;
+    KeyboardSource *kbd = (KeyboardSource *)user_data;
+    AppData *app = kbd->app;
+    unsigned int flags = LIBEVDEV_READ_FLAG_NORMAL;
     struct input_event ev;
-    int rc;
 
-    do {
-        rc = libevdev_next_event(app->dev, LIBEVDEV_READ_FLAG_NORMAL, &ev);
-        if (rc == 0) {
+    for (;;) {
+        int rc = libevdev_next_event(kbd->dev, flags, &ev);
+
+        if (rc == LIBEVDEV_READ_STATUS_SUCCESS || rc == LIBEVDEV_READ_STATUS_SYNC) {
+            // Dropped events: replay the device state before going back to normal reads
+            if (rc == LIBEVDEV_READ_STATUS_SYNC) {
+                flags = LIBEVDEV_READ_FLAG_SYNC;
+            }
             if (ev.type == EV_KEY) {
                 handle_key_event(app, ev.code, ev.value);
             }
         } else if (rc == -EAGAIN) {
-            break;
+            if (flags == LIBEVDEV_READ_FLAG_SYNC) {
+                flags = LIBEVDEV_READ_FLAG_NORMAL;
+                continue;
+            }
+            return G_SOURCE_CONTINUE;
+        } else {
+            // Device unplugged (-ENODEV) or read error: stop watching it
+            kbd->watch_id = 0;
+            remove_keyboard_device(app, kbd);
+            return G_SOURCE_REMOVE;
         }
-    } while (rc == 0);
-
-    return G_SOURCE_CONTINUE;
-}
-
-bool setup_keyboard_monitoring(AppData *app) {
-    app->kbd_fd = find_keyboard_device(app);
-    if (app->kbd_fd < 0) {
-        return false;
     }
-
-    int rc = libevdev_new_from_fd(app->kbd_fd, &app->dev);
-    if (rc < 0) {
-        close(app->kbd_fd);
-        app->kbd_fd = -1;
-        app->dev = NULL;
-        return false;
-    }
-
-    GIOChannel *kbd_channel = g_io_channel_unix_new(app->kbd_fd);
-    g_io_add_watch(kbd_channel, G_IO_IN, keyboard_event_handler, app);
-    g_io_channel_unref(kbd_channel);
-
-    printf("✓ Keyboard monitoring active, waiting for input\n");
-    return true;
 }

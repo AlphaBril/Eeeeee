@@ -20,7 +20,7 @@ Think of it as giving your keyboard the power of *French textbooks, Spanish nove
 
 - Hold vowel → see accents → pick what you want → profit.
 - Works with both **keyboard shortcuts** and **mouse clicks**.
-- Fully configurable: choose your keyboard + tweak detection speed.
+- Works with every keyboard out of the box (hotplug included), tweakable detection speed.
 - Minimal deps: **GTK4**, **libevdev**, **GIO**.
 - Runs natively, no bloat, just fast C.
 
@@ -126,22 +126,21 @@ Logout/login (or reboot) after adding yourself to the group.
 
 ## 🚀 Usage
 
-1. Run setup once to pick your keyboard:
+1. Run it:
 
    ```bash
-   eeeeee --setup
+   eeeeee
    ```
 
-2. Config file lives at:
+   No setup needed: every keyboard is used automatically, including ones plugged in later.
+
+2. Optionally, tweak the hold delay in `~/.config/eeeeee/config`:
 
    ```
-   ~/.config/eeeeee/config
+   hold_duration=500
    ```
 
-   You can edit:
-
-   * **Keyboard device**
-   * **Detection delay** (default = 200ms)
+   (in milliseconds, default = 500ms)
 
 3. Start typing, hold down a vowel, and enjoy your éèêë dreams.
 

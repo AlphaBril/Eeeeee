@@ -3,8 +3,8 @@
 
 #include "types.h"
 
-void free_keyboard_devices(KeyboardDevice *devices, int count);
-KeyboardDevice* scan_keyboard_devices(int *count);
-int find_keyboard_device(AppData *app);
+bool setup_keyboard_monitoring(AppData *app);
+void remove_keyboard_device(AppData *app, KeyboardSource *kbd);
+void cleanup_keyboard_monitoring(AppData *app);
 
 #endif
