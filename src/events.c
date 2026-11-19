@@ -45,8 +45,10 @@ void show_popup(AppData *app) {
         update_popup_content(app, app->key_pressed);
         gtk_widget_set_visible(app->popup_window, TRUE);
         gtk_window_present(GTK_WINDOW(app->popup_window));
+        // Like macOS: nothing is highlighted until the arrow keys are used
+        gtk_window_set_focus_visible(GTK_WINDOW(app->popup_window), FALSE);
         app->popup_shown = true;
-        printf("Popup shown after holding '%i' for %i seconds\n", app->key_pressed, app->configured_time);
+        printf("Popup shown after holding '%i' for %ims\n", app->key_pressed, app->configured_time);
     }
 }
 

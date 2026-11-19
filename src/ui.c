@@ -129,21 +129,21 @@ void update_popup_content(AppData *app, int key_code) {
             display_accent = accent;
         }
 
-        gchar *button_markup = g_strdup_printf(
-			"%s\n<span size='small' alpha='50%%'>%d</span>",
-			display_accent, i + 1
-		);
-		GtkWidget *button = gtk_button_new();
-		GtkWidget *label = gtk_label_new(NULL);
-		gtk_label_set_markup(GTK_LABEL(label), button_markup);
-		gtk_label_set_xalign(GTK_LABEL(label), 0.5);
-		gtk_label_set_yalign(GTK_LABEL(label), 0.5);
-		gtk_button_set_child(GTK_BUTTON(button), label);
-		gtk_widget_set_size_request(button, -1, -1);
+        gchar *number = g_strdup_printf("%d", i + 1);
 
+        GtkWidget *cell = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+        GtkWidget *char_label = gtk_label_new(display_accent);
+        GtkWidget *number_label = gtk_label_new(number);
+        gtk_widget_add_css_class(char_label, "eeeeee-char");
+        gtk_widget_add_css_class(number_label, "eeeeee-number");
+        gtk_box_append(GTK_BOX(cell), char_label);
+        gtk_box_append(GTK_BOX(cell), number_label);
+
+        GtkWidget *button = gtk_button_new();
+        gtk_button_set_child(GTK_BUTTON(button), cell);
         gtk_widget_add_css_class(button, "eeeeee-button");
 
-        g_free(button_markup);
+        g_free(number);
 
         g_object_set_data_full(G_OBJECT(button), "accent",
                               g_strdup(display_accent), g_free);
@@ -162,36 +162,59 @@ void update_popup_content(AppData *app, int key_code) {
 void setup_popup_styling(void) {
     GtkCssProvider *css_provider = gtk_css_provider_new();
 
+    // Modeled on the macOS press-and-hold accent menu
     const char *css_data =
         ".eeeeee-popup {\n"
-        "    background-color: #fff;\n"
-        "    border-radius: 16px;\n"
-        "    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);\n"
-		"    padding: 8px 12px;\n"
+        "    background-color: #ececec;\n"
+        "    border: 1px solid rgba(0, 0, 0, 0.15);\n"
+        "    border-radius: 12px;\n"
+        "    padding: 4px;\n"
         "}\n"
         ".eeeeee-button {\n"
         "    background: none;\n"
         "    border: none;\n"
-        "    border-radius: 12px;\n"
-		"    padding: 24px;\n"
-        "    transition: background-color 0.2s ease;\n"
-        "}\n"
-        ".eeeeee-button label {\n"
-        "    color: #000;\n"
-        "    font-size: 22px;\n"
-        "    font-weight: normal;\n"
-        "}\n"
-        ".eeeeee-button:hover {\n"
-        "    background-color: rgba(0, 0, 0, 0.05);\n"
-        "    transform: translateY(-1px);\n"
-        "}\n"
-        ".eeeeee-button:active {\n"
-        "    background-color: rgba(0, 0, 0, 0.1);\n"
-        "    transform: translateY(0);\n"
         "    box-shadow: none;\n"
+        "    outline: none;\n"
+        "    border-radius: 7px;\n"
+        "    min-width: 30px;\n"
+        "    min-height: 0;\n"
+        "    padding: 3px 6px 2px 6px;\n"
+        "}\n"
+        ".eeeeee-char {\n"
+        "    color: #1d1d1f;\n"
+        "    font-size: 20px;\n"
+        "}\n"
+        ".eeeeee-number {\n"
+        "    color: #8e8e93;\n"
+        "    font-size: 11px;\n"
+        "}\n"
+        ".eeeeee-button:hover,\n"
+        ".eeeeee-button:focus-visible {\n"
+        "    background-color: #007aff;\n"
+        "}\n"
+        ".eeeeee-button:hover .eeeeee-char,\n"
+        ".eeeeee-button:hover .eeeeee-number,\n"
+        ".eeeeee-button:focus-visible .eeeeee-char,\n"
+        ".eeeeee-button:focus-visible .eeeeee-number {\n"
+        "    color: #ffffff;\n"
+        "}\n"
+        "@media (prefers-color-scheme: dark) {\n"
+        "    .eeeeee-popup {\n"
+        "        background-color: #2c2c2e;\n"
+        "        border-color: rgba(255, 255, 255, 0.15);\n"
+        "    }\n"
+        "    .eeeeee-char { color: #f5f5f7; }\n"
+        "    .eeeeee-number { color: #98989d; }\n"
+        "    .eeeeee-button:hover,\n"
+        "    .eeeeee-button:focus-visible { background-color: #0a84ff; }\n"
         "}\n";
 
     gtk_css_provider_load_from_string(css_provider, css_data);
+
+    // Make the dark @media query follow the system light/dark preference
+    g_object_bind_property(gtk_settings_get_default(), "gtk-interface-color-scheme",
+                           css_provider, "prefers-color-scheme",
+                           G_BINDING_SYNC_CREATE);
 
     gtk_style_context_add_provider_for_display(
         gdk_display_get_default(),
@@ -207,21 +230,11 @@ void create_popup_window(AppData *app) {
     gtk_window_set_title(GTK_WINDOW(app->popup_window), "eeeeee");
     gtk_window_set_decorated(GTK_WINDOW(app->popup_window), FALSE);
     gtk_window_set_resizable(GTK_WINDOW(app->popup_window), FALSE);
-    gtk_window_set_default_size(GTK_WINDOW(app->popup_window), 300, 40);
-
     gtk_widget_add_css_class(app->popup_window, "eeeeee-popup");
 
-    GtkWidget *main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    gtk_window_set_child(GTK_WINDOW(app->popup_window), main_box);
-
     // Create and store reference to button box
-    app->popup_button_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_widget_set_halign(app->popup_button_box, GTK_ALIGN_CENTER);
-	gtk_widget_set_valign(app->popup_button_box, GTK_ALIGN_CENTER);
-    gtk_widget_set_margin_start(app->popup_button_box, 10);
-    gtk_widget_set_margin_end(app->popup_button_box, 10);
-    gtk_widget_set_margin_bottom(app->popup_button_box, 10);
-    gtk_box_append(GTK_BOX(main_box), app->popup_button_box);
+    app->popup_button_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
+    gtk_window_set_child(GTK_WINDOW(app->popup_window), app->popup_button_box);
 
 	setup_popup_styling();
 }
