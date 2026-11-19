@@ -6,6 +6,7 @@ project('eeeeee', 'c',
 
 add_project_arguments([
   '-Wno-pedantic',
+  '-DEEEEEE_VERSION="@0@"'.format(meson.project_version()),
 ], language : 'c')
 
 gtk_dep = dependency('gtk4')

@@ -14,9 +14,15 @@ int main(int argc, char **argv) {
         return 0;
     }
 
+    if (argc > 1 && strcmp(argv[1], "--version") == 0) {
+        printf("eeeeee %s\n", EEEEEE_VERSION);
+        return 0;
+    }
+
     if (argc > 1 && strcmp(argv[1], "--help") == 0) {
         printf("Usage: %s [OPTIONS]\n", argv[0]);
         printf("  --setup    Configure keyboard device\n");
+        printf("  --version  Show version\n");
         printf("  --help     Show this help\n");
         return 0;
     }
