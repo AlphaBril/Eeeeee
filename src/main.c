@@ -29,6 +29,7 @@ int main(int argc, char **argv) {
     }
 
     AppData app_data = {0};
+    app_data.kbd_fd = -1;
 
     GtkApplication *app = gtk_application_new("com.example.accent-popup",
                                              G_APPLICATION_DEFAULT_FLAGS);

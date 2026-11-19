@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install build dependencies
         run: |
@@ -41,7 +41,7 @@ jobs:
           mv ../*.deb ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}-amd64.deb
 
       - name: Upload release assets
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}.tar.gz

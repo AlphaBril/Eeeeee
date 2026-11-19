@@ -39,7 +39,7 @@ void save_keyboard_config(const char *device_path) {
         return;
     }
 
-    mkdir(config_dir, 0755);
+    g_mkdir_with_parents(config_dir, 0755);
 
     FILE *f = fopen(config_file, "w");
     if (f) {
@@ -73,10 +73,11 @@ char* load_keyboard_config(int *configured_time) {
             char *newline = strchr(line + 16, '\n');
             if (newline) *newline = '\0';
             device_path = strdup(line + 16);
-        } else if (strncmp(line, "hold_duration=", 13) == 0) {
-            char *newline = strchr(line + 13, '\n');
-            if (newline) *newline = '\0';
-            *configured_time = atoi(strdup(line + 14));
+        } else if (strncmp(line, "hold_duration=", 14) == 0) {
+            int duration = atoi(line + 14);
+            if (duration > 0) {
+                *configured_time = duration;
+            }
 		}
     }
 

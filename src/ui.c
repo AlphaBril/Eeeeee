@@ -157,7 +157,7 @@ void update_popup_content(AppData *app, int key_code) {
     }
 }
 
-void setup_popup_styling() {
+void setup_popup_styling(void) {
     GtkCssProvider *css_provider = gtk_css_provider_new();
 
     const char *css_data =
@@ -235,5 +235,7 @@ void on_activate(GtkApplication *gtk_app, gpointer user_data) {
 
     create_popup_window(app);
 
-    setup_keyboard_monitoring(app);
+    if (!setup_keyboard_monitoring(app)) {
+        g_application_quit(G_APPLICATION(gtk_app));
+    }
 }

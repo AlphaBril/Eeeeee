@@ -1,3 +1,12 @@
+eeeeee (1.0.2-1) unstable; urgency=medium
+
+  * Fix hold_duration config parsing and memory leak.
+  * Exit cleanly when no keyboard device is available.
+  * Create the config directory with its parents.
+  * Fix packaging metadata (license, PKGBUILD source directory).
+
+ -- AlphaBril <alphabril@koodibril.com>  Thu, 19 Nov 2026 12:00:00 +0000
+
 eeeeee (1.0.1-1) unstable; urgency=medium
 
   * Première release empaquetée pour Debian.

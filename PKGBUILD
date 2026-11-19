@@ -1,25 +1,22 @@
 # Maintainer: AlphaBril <alphabril@koodibril.com>
 
 pkgname=eeeeee
-pkgver=1.0.1
+pkgver=1.0.2
 pkgrel=1
 pkgdesc="eeeeee is a GTK4-powered popup for accent characters"
 arch=('x86_64')
-url="https://github.com/AlphaBril/eeeeee"
-license=('GPL3')
+url="https://github.com/AlphaBril/Eeeeee"
+license=('Apache-2.0')
 depends=('gtk4' 'libevdev' 'glib2')
 makedepends=('meson' 'ninja' 'gcc' 'pkgconf')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
 sha256sums=('SKIP')
 
 build() {
-  tar xzf $pkgname-$pkgver.tar.gz
-  cd $pkgname-$pkgver
-  meson setup build --prefix=/usr
+  arch-meson "Eeeeee-$pkgver" build
   meson compile -C build
 }
 
 package() {
-  cd $pkgname-$pkgver
-  DESTDIR="$pkgdir" meson install -C build
+  meson install -C build --destdir "$pkgdir"
 }

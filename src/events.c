@@ -6,6 +6,7 @@
 #include <sys/time.h>
 #include <linux/input.h>
 #include <gio/gio.h>
+#include <unistd.h>
 
 gint64 get_time_ms(void) {
     struct timeval tv;
@@ -163,16 +164,18 @@ gboolean keyboard_event_handler(
     return G_SOURCE_CONTINUE;
 }
 
-void setup_keyboard_monitoring(AppData *app) {
+bool setup_keyboard_monitoring(AppData *app) {
     app->kbd_fd = find_keyboard_device(app);
     if (app->kbd_fd < 0) {
-        return;
+        return false;
     }
 
     int rc = libevdev_new_from_fd(app->kbd_fd, &app->dev);
     if (rc < 0) {
         close(app->kbd_fd);
-        return;
+        app->kbd_fd = -1;
+        app->dev = NULL;
+        return false;
     }
 
     GIOChannel *kbd_channel = g_io_channel_unix_new(app->kbd_fd);
@@ -180,4 +183,5 @@ void setup_keyboard_monitoring(AppData *app) {
     g_io_channel_unref(kbd_channel);
 
     printf("✓ Keyboard monitoring active, waiting for input\n");
+    return true;
 }

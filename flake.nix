@@ -14,7 +14,7 @@
       {
         packages.default = pkgs.stdenv.mkDerivation rec {
           pname = "eeeeee";
-          version = "1.0.1";
+          version = "1.0.2";
 
           src = ./.;
 
@@ -37,9 +37,8 @@
               when holding vowel keys. Allows quick selection of accented
               characters using keyboard shortcuts or mouse clicks.
             '';
-            homepage = "https://github.com/AlphaBril/eeeeee";
-            license = licenses.gpl3Plus;
-            maintainers = [ maintainers.yourusername ];
+            homepage = "https://github.com/AlphaBril/Eeeeee";
+            license = licenses.asl20;
             platforms = platforms.linux;
           };
         };
