@@ -211,10 +211,12 @@ void setup_popup_styling(void) {
 
     gtk_css_provider_load_from_string(css_provider, css_data);
 
+#if GTK_CHECK_VERSION(4, 20, 0)
     // Make the dark @media query follow the system light/dark preference
     g_object_bind_property(gtk_settings_get_default(), "gtk-interface-color-scheme",
                            css_provider, "prefers-color-scheme",
                            G_BINDING_SYNC_CREATE);
+#endif
 
     gtk_style_context_add_provider_for_display(
         gdk_display_get_default(),
